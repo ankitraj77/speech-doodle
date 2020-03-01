@@ -1,0 +1,30 @@
+{
+	"name": "speech-doodle-api",
+	"version": "1.0.0",
+	"description": "Speech Doodle experiment",
+	"main": "app.js",
+	"dependencies": {
+		"@google-cloud/speech": "^3.6.0",
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"fs": "0.0.1-security",
+		"multer": "^1.4.2",
+		"request": "^2.88.2"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ankitraj77/speech-doodle.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/ankitraj77/speech-doodle/issues"
+	},
+	"homepage": "https://github.com/ankitraj77/speech-doodle#readme"
+}
