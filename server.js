@@ -13,7 +13,7 @@ app.use(cors())
 
 app.use(express.static('./'))
 
-async function testGoogleTextToSpeech(audioBuffer) {
+async function getSpeechToText(audioBuffer) {
 	const speech = require('@google-cloud/speech')
 	const client = new speech.SpeechClient({ keyFilename: API_KEY })
 
@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
 // GET AUDIO FILE FROM CLIENT
 app.post('/upload_sound', upload.any(), async (req, res) => {
 	console.log('Getting text transcription..')
-	let transcription = await testGoogleTextToSpeech(req.files[0].buffer).catch(
+	let transcription = await getSpeechToText(req.files[0].buffer).catch(
 		console.error
 	)
 	console.log('Text transcription: ' + transcription)
