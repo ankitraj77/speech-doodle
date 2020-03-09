@@ -16,7 +16,10 @@ const app = express()
 // )
 
 // FOR LOCAL ENV
-const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
+// const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
+
+// FOR HEROKU ENV
+const API_KEY = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS)
 
 app.use(cors())
 
