@@ -41,7 +41,7 @@ async function getSpeechToText(audioBuffer) {
 	}
 	const config = {
 		encoding: 'LINEAR16',
-		sampleRateHertz: 44100,
+		// sampleRateHertz: 44100,
 		languageCode: 'en-US'
 	}
 	const request = {
