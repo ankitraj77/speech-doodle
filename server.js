@@ -40,6 +40,12 @@ async function testGoogleTextToSpeech(audioBuffer) {
 	return transcription
 }
 
+// HOME
+app.get('/', (req, res) => {
+	res.send('Server Js')
+})
+
+// GET AUDIO FILE FROM CLIENT
 app.post('/upload_sound', upload.any(), async (req, res) => {
 	console.log('Getting text transcription..')
 	let transcription = await testGoogleTextToSpeech(req.files[0].buffer).catch(
