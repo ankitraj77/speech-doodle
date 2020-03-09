@@ -24,7 +24,7 @@ const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
 )
 
 console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
-console.log(API_KEY)
+// console.log(API_KEY)
 
 app.use(cors())
 
