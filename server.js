@@ -9,11 +9,11 @@ const upload = multer()
 const app = express()
 
 // FOR HEROKU ENV
-fs.writeFile(
-	process.env.GOOGLE_APPLICATION_CREDENTIALS,
-	process.env.GCP_CRED,
-	err => {}
-)
+// fs.writeFile(
+// 	process.env.GOOGLE_APPLICATION_CREDENTIALS,
+// 	process.env.GCP_CRED,
+// 	err => {}
+// )
 
 // FOR LOCAL ENV
 const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
