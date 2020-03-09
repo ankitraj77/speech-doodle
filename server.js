@@ -23,7 +23,7 @@ const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
 	process.env.GOOGLE_APPLICATION_CREDENTIALS
 )
 
-console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
+// console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
 // console.log(API_KEY)
 
 app.use(cors())
@@ -32,7 +32,9 @@ app.use(express.static('./'))
 
 async function getSpeechToText(audioBuffer) {
 	const speech = require('@google-cloud/speech')
-	const client = new speech.SpeechClient()
+	const client = new speech.SpeechClient({
+		credentials: GOOGLE_APPLICATION_CREDENTIALS
+	})
 
 	const audio = {
 		content: audioBuffer.toString('base64')
