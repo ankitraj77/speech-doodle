@@ -7,7 +7,6 @@ var cors = require('cors')
 const upload = multer()
 
 const app = express()
-const port = 3000
 const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
 
 app.use(cors())
@@ -53,6 +52,8 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 	res.status(200).send(transcription)
 })
 
+//
+const port = process.env.PORT || 3000
 app.listen(port, () => {
-	console.log(`Express server listening on port: ${port}...`)
+	console.log(`Speech Doodle API listening at ${port}...`)
 })
