@@ -21,6 +21,9 @@ const app = express()
 // FOR HEROKU ENV
 const API_KEY = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS)
 
+console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
+console.log(API_KEY)
+
 app.use(cors())
 
 app.use(express.static('./'))
