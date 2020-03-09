@@ -10,8 +10,6 @@ const app = express()
 const port = 3000
 const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
 
-console.log(API_KEY)
-
 app.use(cors())
 
 app.use(express.static('./'))
