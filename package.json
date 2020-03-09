@@ -15,7 +15,7 @@
 	},
 	"devDependencies": {},
 	"scripts": {
-		"preinstall": "node gcpConfig.js",
+		"install": "node gcpConfig.js",
 		"start": "node server.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
