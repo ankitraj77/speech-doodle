@@ -32,8 +32,8 @@ async function getTranscribed(audioBuffer) {
 	}
 
 	const config = {
-		encoding: 'OGG_OPUS',
-		sampleRateHertz: 16000,
+		encoding: 'LINEAR16',
+		sampleRateHertz: 41000,
 		languageCode: 'en-US'
 	}
 
