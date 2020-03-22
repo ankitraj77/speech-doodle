@@ -92,7 +92,9 @@ async function understandSyntax(content) {
 	const language = require('@google-cloud/language')
 
 	// Instantiates a client
-	const client = new language.LanguageServiceClient()
+	const client = new language.LanguageServiceClient({
+		credentials: GOOGLE_APPLICATION_CREDENTIALS
+	})
 
 	// The text to analyze
 	const text = 'Draw a butterfly and a duck.'
