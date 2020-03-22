@@ -16,12 +16,12 @@ const app = express()
 // )
 
 // FOR LOCAL ENV
-const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
+// const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
 
 // FOR HEROKU ENV
-// const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
-// 	process.env.GOOGLE_APPLICATION_CREDENTIALS
-// )
+const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
+	process.env.GOOGLE_APPLICATION_CREDENTIALS
+)
 
 // console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
 // console.log(API_KEY)
