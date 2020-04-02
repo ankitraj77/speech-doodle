@@ -18,12 +18,13 @@ const app = express()
 // )
 
 // FOR LOCAL ENV
-const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
+// const GOOGLE_APPLICATION_CREDENTIALS =
+// 	process.env.GOOGLE_APPLICATION_CREDENTIALS
 
 // FOR HEROKU ENV
-// const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
-// 	process.env.GOOGLE_APPLICATION_CREDENTIALS
-// )
+const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
+	process.env.GOOGLE_APPLICATION_CREDENTIALS
+)
 
 // console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
 // console.log(API_KEY)
@@ -35,6 +36,7 @@ app.use(express.static('./'))
 // ================================ SPEECH
 async function getSpeechToText(audioBuffer) {
 	const speech = require('@google-cloud/speech')
+	// const client = new speech.SpeechClient()
 	const client = new speech.SpeechClient({
 		credentials: GOOGLE_APPLICATION_CREDENTIALS
 	})
@@ -82,15 +84,32 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 	if (things.length > 0) {
 		let fileName = 'data/' + things[0] + '.ndjson'
 		parseSimplifiedDrawings(fileName, function(err, drawings) {
-			if (err) return console.error(err)
-			console.log('# of drawings:', drawings.length)
-			let result = {
-				transcript: transcription,
-				things: things,
-				doodles: drawings
+			if (err) {
+				console.error(err)
+
+				let result = {
+					transcript: transcription,
+					things: [],
+					doodles: []
+				}
+				res.status(200).send(result)
+			} else {
+				console.log('# of drawings:', drawings.length)
+				let result = {
+					transcript: transcription,
+					things: things,
+					doodles: drawings
+				}
+				res.status(200).send(result)
 			}
-			res.status(200).send(result)
 		})
+	} else {
+		let result = {
+			transcript: transcription,
+			things: [],
+			doodles: []
+		}
+		res.status(200).send(result)
 	}
 
 	//
@@ -113,6 +132,7 @@ async function understandSyntax(content) {
 	const language = require('@google-cloud/language')
 
 	// Instantiates a client
+	// const client = new language.LanguageServiceClient()
 	const client = new language.LanguageServiceClient({
 		credentials: GOOGLE_APPLICATION_CREDENTIALS
 	})
@@ -149,18 +169,27 @@ app.get('/language', async (req, res) => {
 
 // ========================= GET QUICK-DRAW DRAWINGS
 function parseSimplifiedDrawings(fileName, callback) {
-	var drawings = []
-	var fileStream = fs.createReadStream(fileName)
-	fileStream
-		.pipe(ndjson.parse())
-		.on('data', function(obj) {
-			drawings.push(obj)
-		})
-		.on('error', callback)
-		.on('end', function() {
-			callback(null, drawings)
-			console.log('END')
-		})
+	// Check if file exist
+	fs.access(fileName, fs.F_OK, err => {
+		if (err) {
+			console.error(err)
+			callback(err, null)
+			return
+		}
+		//file exists
+		var drawings = []
+		var fileStream = fs.createReadStream(fileName)
+		fileStream
+			.pipe(ndjson.parse())
+			.on('data', function(obj) {
+				drawings.push(obj)
+			})
+			.on('error', callback)
+			.on('end', function() {
+				callback(null, drawings)
+				// console.log('END')
+			})
+	})
 }
 
 // parseSimplifiedDrawings('data/tractor.ndjson', function(err, drawings) {
