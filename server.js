@@ -4,6 +4,8 @@ const multer = require('multer')
 const fs = require('fs')
 var cors = require('cors')
 
+var ndjson = require('ndjson') // npm install ndjson
+
 const upload = multer()
 
 const app = express()
@@ -16,12 +18,12 @@ const app = express()
 // )
 
 // FOR LOCAL ENV
-// const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
+const API_KEY = process.env.GOOGLE_APPLICATION_CREDENTIALS
 
 // FOR HEROKU ENV
-const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
-	process.env.GOOGLE_APPLICATION_CREDENTIALS
-)
+// const GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(
+// 	process.env.GOOGLE_APPLICATION_CREDENTIALS
+// )
 
 // console.log('++++++++++++++++ PRINTING API KEY +++++++++++')
 // console.log(API_KEY)
@@ -58,8 +60,13 @@ async function getSpeechToText(audioBuffer) {
 }
 
 // HOME
-app.get('/', (req, res) => {
-	res.send('Speech Server Js')
+app.get('/test', (req, res) => {
+	let fileName = 'data/tractor.ndjson'
+	parseSimplifiedDrawings(fileName, function(err, drawings) {
+		if (err) return console.error(err)
+		console.log('# of drawings:', drawings.length)
+		res.status(200).send(drawings)
+	})
 })
 
 // GET AUDIO FILE FROM CLIENT
@@ -70,11 +77,25 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 	)
 	let things = await understandSyntax(transcription).catch(console.error)
 	console.log('Text transcription: ' + transcription)
-	let result = {
-		transcript: transcription,
-		things: things
+
+	//
+	if (things.length > 0) {
+		let fileName = 'data/' + things[0] + '.ndjson'
+		parseSimplifiedDrawings(fileName, function(err, drawings) {
+			if (err) return console.error(err)
+			console.log('# of drawings:', drawings.length)
+			let result = {
+				transcript: transcription,
+				things: things,
+				doodles: drawings
+			}
+			res.status(200).send(result)
+		})
 	}
-	res.status(200).send(result)
+
+	//
+
+	// res.status(200).send(result)
 })
 
 // ======================= NATURAL LANGUAGE API
@@ -126,7 +147,32 @@ app.get('/language', async (req, res) => {
 	res.status(200).send(nlpResult)
 })
 
-//
+// ========================= GET QUICK-DRAW DRAWINGS
+function parseSimplifiedDrawings(fileName, callback) {
+	var drawings = []
+	var fileStream = fs.createReadStream(fileName)
+	fileStream
+		.pipe(ndjson.parse())
+		.on('data', function(obj) {
+			drawings.push(obj)
+		})
+		.on('error', callback)
+		.on('end', function() {
+			callback(null, drawings)
+			console.log('END')
+		})
+}
+
+// parseSimplifiedDrawings('data/tractor.ndjson', function(err, drawings) {
+// 	if (err) return console.error(err)
+// 	drawings.forEach(function(d) {
+// 		// Do something with the drawing
+// 		console.log(d.key_id, d.countrycode)
+// 	})
+// 	console.log('# of drawings:', drawings.length)
+// })
+
+// ============================
 const port = process.env.PORT || 3000
 app.listen(port, () => {
 	console.log(`Speech Doodle API listening at ${port}...`)
