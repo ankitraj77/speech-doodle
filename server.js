@@ -10,6 +10,9 @@ const upload = multer()
 
 const app = express()
 
+//
+const dataDir = 'optimized_data/'
+
 // FOR HEROKU ENV
 // fs.writeFile(
 // 	process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -38,33 +41,33 @@ async function getSpeechToText(audioBuffer) {
 	const speech = require('@google-cloud/speech')
 	// const client = new speech.SpeechClient()
 	const client = new speech.SpeechClient({
-		credentials: GOOGLE_APPLICATION_CREDENTIALS
+		credentials: GOOGLE_APPLICATION_CREDENTIALS,
 	})
 
 	const audio = {
-		content: audioBuffer.toString('base64')
+		content: audioBuffer.toString('base64'),
 	}
 	const config = {
 		encoding: 'LINEAR16',
 		// sampleRateHertz: 44100,
-		languageCode: 'en-US'
+		languageCode: 'en-US',
 	}
 	const request = {
 		audio: audio,
-		config: config
+		config: config,
 	}
 
 	const [response] = await client.recognize(request)
 	const transcription = response.results
-		.map(result => result.alternatives[0].transcript)
+		.map((result) => result.alternatives[0].transcript)
 		.join('\n')
 	return transcription
 }
 
 // HOME
 app.get('/test', (req, res) => {
-	let fileName = 'data/tractor.ndjson'
-	parseSimplifiedDrawings(fileName, function(err, drawings) {
+	let fileName = dataDir + 'tractor.ndjson'
+	parseSimplifiedDrawings(fileName, function (err, drawings) {
 		if (err) return console.error(err)
 		console.log('# of drawings:', drawings.length)
 		res.status(200).send(drawings)
@@ -82,15 +85,15 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 
 	//
 	if (things.length > 0) {
-		let fileName = 'data/' + things[0] + '.ndjson'
-		parseSimplifiedDrawings(fileName, function(err, drawings) {
+		let fileName = dataDir + things[0] + '.ndjson'
+		parseSimplifiedDrawings(fileName, function (err, drawings) {
 			if (err) {
 				console.error(err)
 
 				let result = {
 					transcript: transcription,
 					things: [],
-					doodles: []
+					doodles: [],
 				}
 				res.status(200).send(result)
 			} else {
@@ -98,7 +101,7 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 				let result = {
 					transcript: transcription,
 					things: things,
-					doodles: drawings
+					doodles: drawings,
 				}
 				res.status(200).send(result)
 			}
@@ -107,7 +110,7 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 		let result = {
 			transcript: transcription,
 			things: [],
-			doodles: []
+			doodles: [],
 		}
 		res.status(200).send(result)
 	}
@@ -134,7 +137,7 @@ async function understandSyntax(content) {
 	// Instantiates a client
 	// const client = new language.LanguageServiceClient()
 	const client = new language.LanguageServiceClient({
-		credentials: GOOGLE_APPLICATION_CREDENTIALS
+		credentials: GOOGLE_APPLICATION_CREDENTIALS,
 	})
 
 	// The text to analyze
@@ -142,7 +145,7 @@ async function understandSyntax(content) {
 
 	const document = {
 		content: content,
-		type: 'PLAIN_TEXT'
+		type: 'PLAIN_TEXT',
 	}
 
 	// Need to specify an encodingType to receive word offsets
@@ -154,7 +157,7 @@ async function understandSyntax(content) {
 	// COLLECT NOUNS IN AN ARRAY
 	let things = []
 	if (result.tokens) {
-		result.tokens.forEach(poS => {
+		result.tokens.forEach((poS) => {
 			if (poS.partOfSpeech.tag == 'NOUN') things.push(poS.text.content)
 		})
 	}
@@ -170,7 +173,7 @@ app.get('/language', async (req, res) => {
 // ========================= GET QUICK-DRAW DRAWINGS
 function parseSimplifiedDrawings(fileName, callback) {
 	// Check if file exist
-	fs.access(fileName, fs.F_OK, err => {
+	fs.access(fileName, fs.F_OK, (err) => {
 		if (err) {
 			console.error(err)
 			callback(err, null)
@@ -181,11 +184,11 @@ function parseSimplifiedDrawings(fileName, callback) {
 		var fileStream = fs.createReadStream(fileName)
 		fileStream
 			.pipe(ndjson.parse())
-			.on('data', function(obj) {
+			.on('data', function (obj) {
 				drawings.push(obj)
 			})
 			.on('error', callback)
-			.on('end', function() {
+			.on('end', function () {
 				callback(null, drawings)
 				// console.log('END')
 			})
