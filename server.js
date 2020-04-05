@@ -76,13 +76,15 @@ app.get('/test', (req, res) => {
 
 // GET AUDIO FILE FROM CLIENT
 app.post('/upload_sound', upload.any(), async (req, res) => {
-	console.log('Getting text transcription..')
+	console.log('Calling Speech API')
 	let transcription = await getSpeechToText(req.files[0].buffer).catch(
 		console.error
 	)
-	let things = await understandSyntax(transcription).catch(console.error)
 	console.log('Text transcription: ' + transcription)
 
+	// FIND OUT NOUNS
+	console.log('Calling NLP API')
+	let things = await understandSyntax(transcription).catch(console.error)
 	//
 	if (things.length > 0) {
 		let fileName = dataDir + things[0]
