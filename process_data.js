@@ -78,8 +78,8 @@ function processData() {
 							newData.push(drawings[i])
 							count++
 						}
-						if (count >= 200) {
-							console.log('200 records found')
+						if (count >= 150) {
+							console.log('150 records selected')
 							// console.log(newData)
 							// newData = JSON.stringify(newData)
 							// CREATE A NEW FILE
