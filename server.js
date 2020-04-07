@@ -87,7 +87,7 @@ app.post('/upload_sound', upload.any(), async (req, res) => {
 	let things = await understandSyntax(transcription).catch(console.error)
 	//
 	if (things.length > 0) {
-		let fileName = dataDir + things[0]
+		let fileName = (dataDir + things[0]).toLowerCase()
 		parseSimplifiedDrawings(fileName, function (err, drawings) {
 			if (err) {
 				console.error(err)
