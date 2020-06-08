@@ -5,6 +5,7 @@ raw_data
 .DS_Store
 .env
 node_modules
+/node_modules
 /dist
 
 # local env files
